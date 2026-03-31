@@ -25,6 +25,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'phone' => ['nullable', 'string', 'max:20'],
+            'role' => ['required', 'in:client,specialist,salon_owner'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -33,11 +34,14 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'role' => 'client',
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));
         Auth::login($user);
+
+        if ($user->isSalonOwner()) return redirect()->route('owner.dashboard');
+        if ($user->isSpecialist()) return redirect()->route('specialist.dashboard');
         return redirect()->route('client.dashboard');
     }
 }

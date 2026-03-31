@@ -26,6 +26,24 @@
                     @error('phone')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-stone-700 mb-2">I want to join as</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="role" value="client" class="peer sr-only" {{ old('role', 'client') === 'client' ? 'checked' : '' }}>
+                            <div class="text-center py-2.5 px-2 rounded-2xl border border-stone-200 text-sm font-medium text-stone-600 peer-checked:border-gold peer-checked:bg-gold/10 peer-checked:text-gold hover:border-gold/50 transition">Client</div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="role" value="specialist" class="peer sr-only" {{ old('role') === 'specialist' ? 'checked' : '' }}>
+                            <div class="text-center py-2.5 px-2 rounded-2xl border border-stone-200 text-sm font-medium text-stone-600 peer-checked:border-gold peer-checked:bg-gold/10 peer-checked:text-gold hover:border-gold/50 transition">Specialist</div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="role" value="salon_owner" class="peer sr-only" {{ old('role') === 'salon_owner' ? 'checked' : '' }}>
+                            <div class="text-center py-2.5 px-2 rounded-2xl border border-stone-200 text-sm font-medium text-stone-600 peer-checked:border-gold peer-checked:bg-gold/10 peer-checked:text-gold hover:border-gold/50 transition">Salon Owner</div>
+                        </label>
+                    </div>
+                    @error('role')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+                <div>
                     <label for="password" class="block text-sm font-medium text-stone-700 mb-1">Password</label>
                     <input id="password" type="password" name="password" required class="w-full px-4 py-3 rounded-2xl border border-stone-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none text-sm bg-cream/50">
                     @error('password')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
