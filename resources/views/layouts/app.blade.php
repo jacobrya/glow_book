@@ -88,6 +88,12 @@
                         @if(auth()->user()->isClient())
                             <a href="{{ route('client.dashboard') }}" class="block {{ request()->routeIs('client.dashboard') ? 'text-gold' : 'text-stone-300' }} py-1">Dashboard</a>
                             <a href="{{ route('client.book') }}" class="block text-gold font-semibold py-1">Book Now</a>
+                        @elseif(auth()->user()->isSpecialist())
+                            <a href="{{ route('specialist.dashboard') }}" class="block {{ request()->routeIs('specialist.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold py-1">My Schedule</a>
+                        @elseif(auth()->user()->isSalonOwner())
+                            <a href="{{ route('owner.dashboard') }}" class="block {{ request()->routeIs('owner.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold py-1">My Salon</a>
+                        @elseif(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="block {{ request()->routeIs('admin.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold py-1">Admin</a>
                         @endif
                         <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="block text-stone-400 hover:text-red-400 py-1">Sign Out</button></form>
                     @else
@@ -105,6 +111,14 @@
         <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-2xl flex items-center space-x-2">
             <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             <span class="text-sm font-medium">{{ session('success') }}</span>
+        </div>
+    </div>
+@endif
+@if(session('error'))
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center space-x-2">
+            <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            <span class="text-sm font-medium">{{ session('error') }}</span>
         </div>
     </div>
 @endif
