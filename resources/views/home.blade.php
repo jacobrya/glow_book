@@ -18,7 +18,7 @@
 
 <section class="max-w-7xl mx-auto px-4 py-16">
     <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-brown">Our Salons</h2>
+        <h2 class="text-3xl font-bold text-brown">Available Salons</h2>
         <p class="text-stone-500 mt-2">Find the perfect salon near you</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
