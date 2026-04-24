@@ -24,15 +24,32 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
+
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // 1. Заполняем проверенные данные (имя, email)
+        $user->fill($request->validated());
+
+        // 2. Логика загрузки аватара
+        if ($request->hasFile('avatar')) {
+            // Удаляем старый файл, если он существует, чтобы не копить мусор
+            if ($user->avatar) {
+                \Storage::disk('public')->delete($user->avatar);
+            }
+
+            // Сохраняем новый файл в папку storage/app/public/avatars
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
         }
 
-        $request->user()->save();
+        // 3. Сбрасываем верификацию email, если он изменился
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

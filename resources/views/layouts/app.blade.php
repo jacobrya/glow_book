@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>GlowBook — @yield('title', 'Beauty Salon Booking')</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💄</text></svg>">    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💄</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -56,13 +57,23 @@
 
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center space-x-2 text-stone-300 hover:text-gold transition">
-                            <div class="w-8 h-8 bg-gold/20 rounded-full flex items-center justify-center">
-                                <span class="text-gold text-sm font-semibold">{{ mb_substr(auth()->user()->name, 0, 1) }}</span>
+                            <div class="w-8 h-8 bg-gold/20 rounded-full flex items-center justify-center overflow-hidden border border-gold/30">
+                                @if(auth()->user()->avatar)
+                                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="text-gold text-sm font-semibold">{{ mb_substr(auth()->user()->name, 0, 1) }}</span>
+                                @endif
                             </div>
                             <span class="text-sm font-medium">{{ auth()->user()->name }}</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
                         <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl py-2 border border-stone-200">
+                            <a href="{{ route('profile.edit') }}" class="w-full text-left block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">
+                                {{ __('Profile Settings') }}
+                            </a>
+
+                            <div class="border-t border-stone-100 my-1"></div>
+
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">Sign Out</button>
@@ -85,16 +96,7 @@
                     <a href="{{ route('services') }}" class="block {{ request()->routeIs('services') ? 'text-gold font-bold' : 'text-stone-300' }} hover:text-gold transition py-1">Services</a>
                     <a href="{{ route('specialists') }}" class="block {{ request()->routeIs('specialists') ? 'text-gold font-bold' : 'text-stone-300' }} hover:text-gold transition py-1">Specialists</a>
                     @auth
-                        @if(auth()->user()->isClient())
-                            <a href="{{ route('client.dashboard') }}" class="block {{ request()->routeIs('client.dashboard') ? 'text-gold' : 'text-stone-300' }} py-1">Dashboard</a>
-                            <a href="{{ route('client.book') }}" class="block text-gold font-semibold py-1">Book Now</a>
-                        @elseif(auth()->user()->isSpecialist())
-                            <a href="{{ route('specialist.dashboard') }}" class="block {{ request()->routeIs('specialist.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold py-1">My Schedule</a>
-                        @elseif(auth()->user()->isSalonOwner())
-                            <a href="{{ route('owner.dashboard') }}" class="block {{ request()->routeIs('owner.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold py-1">My Salon</a>
-                        @elseif(auth()->user()->isAdmin())
-                            <a href="{{ route('admin.dashboard') }}" class="block {{ request()->routeIs('admin.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold py-1">Admin</a>
-                        @endif
+                        <a href="{{ route('profile.edit') }}" class="block text-stone-300 py-1">Profile Settings</a>
                         <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="block text-stone-400 hover:text-red-400 py-1">Sign Out</button></form>
                     @else
                         <a href="{{ route('login') }}" class="block {{ request()->routeIs('login') ? 'text-gold' : 'text-stone-300' }} py-1">Sign In</a>
@@ -114,14 +116,6 @@
         </div>
     </div>
 @endif
-@if(session('error'))
-    <div class="max-w-7xl mx-auto px-4 mt-4">
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center space-x-2">
-            <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-            <span class="text-sm font-medium">{{ session('error') }}</span>
-        </div>
-    </div>
-@endif
 
 <main class="flex-1">@yield('content')</main>
 
@@ -132,7 +126,6 @@
                 <span class="text-lg font-bold text-brown">GlowBook</span>
                 <p class="text-sm text-stone-500 mt-2">Your premier beauty booking platform in Kazakhstan.</p>
             </div>
-
             <div>
                 <h4 class="text-brown font-semibold mb-3 text-sm uppercase tracking-wider">Quick Links</h4>
                 <div class="space-y-2">
@@ -141,7 +134,6 @@
                     <a href="{{ route('specialists') }}" class="block text-sm text-stone-500 hover:text-gold transition">Specialists</a>
                 </div>
             </div>
-
             <div>
                 <h4 class="text-brown font-semibold mb-3 text-sm uppercase tracking-wider">Contact</h4>
                 <div class="space-y-2 text-sm text-stone-500">
@@ -150,27 +142,19 @@
                     <p>hello@glowbook.kz</p>
                 </div>
             </div>
-
             <div>
                 <h4 class="text-brown font-semibold mb-3 text-sm uppercase tracking-wider">Working Hours</h4>
                 <div class="space-y-2 text-sm text-stone-500 mb-4">
                     <p>Mon – Fri: 09:00 – 21:00</p>
                     <p>Sat – Sun: 10:00 – 20:00</p>
                 </div>
-
-                <h4 class="text-brown font-semibold mb-3 text-sm uppercase tracking-wider">Follow Us</h4>
-                <div class="space-y-2 text-sm text-stone-500">
-                    <p>Instagram: @glowbook.kz</p>
-                    <p>Telegram: @glowbook_support</p>
-                    <p>TikTok: @glowbook.kz</p>
-                </div>
             </div>
         </div>
         <div class="border-t border-stone-200 mt-8 pt-6 text-center text-sm text-stone-400">&copy; {{ date('Y') }} GlowBook. All rights reserved.</div>
     </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
         class="fixed bottom-6 right-6 bg-gold text-white w-10 h-10 rounded-full shadow-md hover:opacity-80 transition">
     ↑
