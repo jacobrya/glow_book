@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>GlowBook — @yield('title', 'Beauty Salon Booking')</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💄</text></svg>">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -44,17 +45,6 @@
                 <a href="{{ route('specialists') }}" class="{{ request()->routeIs('specialists') ? 'text-gold' : 'text-stone-300' }} hover:text-gold transition text-sm font-medium">Specialists</a>
 
                 @auth
-                    @if(auth()->user()->isClient())
-                        <a href="{{ route('client.dashboard') }}" class="{{ request()->routeIs('client.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold transition text-sm font-medium">Dashboard</a>
-                        <a href="{{ route('client.book') }}" class="btn-gold text-white px-4 py-2 rounded-2xl font-semibold text-sm transition">Book Now</a>
-                    @elseif(auth()->user()->isSpecialist())
-                        <a href="{{ route('specialist.dashboard') }}" class="{{ request()->routeIs('specialist.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold transition text-sm font-medium">My Schedule</a>
-                    @elseif(auth()->user()->isSalonOwner())
-                        <a href="{{ route('owner.dashboard') }}" class="{{ request()->routeIs('owner.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold transition text-sm font-medium">My Salon</a>
-                    @elseif(auth()->user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'text-gold' : 'text-stone-300' }} hover:text-gold transition text-sm font-medium">Admin</a>
-                    @endif
-
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center space-x-2 text-stone-300 hover:text-gold transition">
                             <div class="w-8 h-8 bg-gold/20 rounded-full flex items-center justify-center overflow-hidden border border-gold/30">
@@ -65,15 +55,11 @@
                                 @endif
                             </div>
                             <span class="text-sm font-medium">{{ auth()->user()->name }}</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
                         <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl py-2 border border-stone-200">
                             <a href="{{ route('profile.edit') }}" class="w-full text-left block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">
                                 {{ __('Profile Settings') }}
                             </a>
-
-                            <div class="border-t border-stone-100 my-1"></div>
-
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">Sign Out</button>
@@ -81,28 +67,9 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'text-gold' : 'text-stone-300' }} hover:text-gold transition text-sm font-medium">Sign In</a>
+                    <a href="{{ route('login') }}" class="text-stone-300 hover:text-gold transition text-sm font-medium">Sign In</a>
                     <a href="{{ route('register') }}" class="btn-gold text-white px-4 py-2 rounded-2xl font-semibold text-sm transition">Get Started</a>
                 @endauth
-            </div>
-
-            <div class="md:hidden" x-data="{ mobileOpen: false }">
-                <button @click="mobileOpen = !mobileOpen" class="text-stone-300 hover:text-gold">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
-                <div x-show="mobileOpen" @click.away="mobileOpen = false" x-transition class="absolute top-16 left-0 right-0 bg-brown border-t border-stone-700 shadow-xl p-4 space-y-3">
-                    <a href="{{ route('home') }}" class="block {{ request()->routeIs('home') ? 'text-gold font-bold' : 'text-stone-300' }} hover:text-gold transition py-1">Home</a>
-                    <a href="{{ route('salons') }}" class="block {{ request()->routeIs('salons') ? 'text-gold font-bold' : 'text-stone-300' }} hover:text-gold transition py-1">Salons</a>
-                    <a href="{{ route('services') }}" class="block {{ request()->routeIs('services') ? 'text-gold font-bold' : 'text-stone-300' }} hover:text-gold transition py-1">Services</a>
-                    <a href="{{ route('specialists') }}" class="block {{ request()->routeIs('specialists') ? 'text-gold font-bold' : 'text-stone-300' }} hover:text-gold transition py-1">Specialists</a>
-                    @auth
-                        <a href="{{ route('profile.edit') }}" class="block text-stone-300 py-1">Profile Settings</a>
-                        <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="block text-stone-400 hover:text-red-400 py-1">Sign Out</button></form>
-                    @else
-                        <a href="{{ route('login') }}" class="block {{ request()->routeIs('login') ? 'text-gold' : 'text-stone-300' }} py-1">Sign In</a>
-                        <a href="{{ route('register') }}" class="block text-gold font-semibold py-1">Get Started</a>
-                    @endauth
-                </div>
             </div>
         </div>
     </div>
@@ -111,7 +78,6 @@
 @if(session('success'))
     <div class="max-w-7xl mx-auto px-4 mt-4">
         <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-2xl flex items-center space-x-2">
-            <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             <span class="text-sm font-medium">{{ session('success') }}</span>
         </div>
     </div>
@@ -120,43 +86,85 @@
 <main class="flex-1">@yield('content')</main>
 
 <footer class="bg-cream border-t border-stone-200 mt-12">
-    <div class="max-w-7xl mx-auto px-4 py-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto px-4 py-16">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div>
-                <span class="text-lg font-bold text-brown">GlowBook</span>
-                <p class="text-sm text-stone-500 mt-2">Your premier beauty booking platform in Kazakhstan.</p>
+                <h4 class="text-brown font-bold mb-6 text-2xl">GlowBook</h4>
+                <p class="text-lg text-stone-500 leading-relaxed font-light">
+                    Your premier beauty booking platform in Kazakhstan.
+                </p>
             </div>
+
             <div>
-                <h4 class="text-brown font-semibold mb-3 text-sm uppercase tracking-wider">Quick Links</h4>
-                <div class="space-y-2">
-                    <a href="{{ route('salons') }}" class="block text-sm text-stone-500 hover:text-gold transition">Salons</a>
-                    <a href="{{ route('services') }}" class="block text-sm text-stone-500 hover:text-gold transition">Services</a>
-                    <a href="{{ route('specialists') }}" class="block text-sm text-stone-500 hover:text-gold transition">Specialists</a>
+                <h4 class="text-brown font-bold mb-6 text-base uppercase tracking-widest">Quick Links</h4>
+                <div class="space-y-4">
+                    <a href="{{ route('salons') }}" class="block text-lg text-stone-500 hover:text-gold transition font-light">Salons</a>
+                    <a href="{{ route('services') }}" class="block text-lg text-stone-500 hover:text-gold transition font-light">Services</a>
+                    <a href="{{ route('specialists') }}" class="block text-lg text-stone-500 hover:text-gold transition font-light">Specialists</a>
                 </div>
             </div>
+
             <div>
-                <h4 class="text-brown font-semibold mb-3 text-sm uppercase tracking-wider">Contact</h4>
-                <div class="space-y-2 text-sm text-stone-500">
-                    <p>Tole Bi St 59, Almaty</p>
-                    <p>+7 (727) 123-45-67</p>
-                    <p>hello@glowbook.kz</p>
+                <h4 class="text-brown font-bold mb-6 text-base uppercase tracking-widest">Follow Us</h4>
+                <div class="space-y-4 text-lg text-stone-500 font-light">
+                    <a href="#" class="block hover:text-gold transition">Instagram: @glowbook.kz</a>
+                    <a href="#" class="block hover:text-gold transition">Telegram: @glowbook_support</a>
+                    <a href="#" class="block hover:text-gold transition">TikTok: @glowbook.kz</a>
                 </div>
             </div>
+
             <div>
-                <h4 class="text-brown font-semibold mb-3 text-sm uppercase tracking-wider">Working Hours</h4>
-                <div class="space-y-2 text-sm text-stone-500 mb-4">
+                <h4 class="text-brown font-bold mb-6 text-base uppercase tracking-widest">Working Hours</h4>
+                <div class="space-y-3 text-lg text-stone-500 font-light">
                     <p>Mon – Fri: 09:00 – 21:00</p>
                     <p>Sat – Sun: 10:00 – 20:00</p>
                 </div>
             </div>
         </div>
-        <div class="border-t border-stone-200 mt-8 pt-6 text-center text-sm text-stone-400">&copy; {{ date('Y') }} GlowBook. All rights reserved.</div>
+
+        <div class="border-t border-stone-100 pt-12">
+            <h4 class="text-brown font-bold mb-8 text-base uppercase tracking-widest text-center">Our Locations</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+                <div class="group rounded-[2.5rem] overflow-hidden shadow-sm border border-stone-200 bg-white transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                    <div class="p-6 bg-white">
+                        <p class="text-base font-bold text-brown uppercase">📍 Almaty Branch</p>
+                        <p class="text-sm text-stone-400 mt-1 font-light">Abay Ave 52, Almaty</p>
+                    </div>
+                    <iframe
+                        width="100%" height="250" frameborder="0" style="border:0"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.7702223984384!2d76.9097!3d43.2381!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836ecf36605063%3A0x280e551f33530c34!2z0L_RgNC-0YHQvy4g0JDQsdCw0Y8gNTIsINCQ0LvQvNCw0YLRiyAwNTAwMDAsINCa0LDQt9Cw0YXRgdGC0LDQvQ!5e0!3m2!1sru!2skz!4v1714000000000"
+                        class="grayscale group-hover:grayscale-0 transition-all duration-700"
+                        allowfullscreen></iframe>
+                </div>
+
+                <div class="group rounded-[2.5rem] overflow-hidden shadow-sm border border-stone-200 bg-white transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                    <div class="p-6 bg-white">
+                        <p class="text-base font-bold text-brown uppercase">📍 Astana Branch</p>
+                        <p class="text-sm text-stone-400 mt-1 font-light">Mangilik El Ave 34, Astana</p>
+                    </div>
+                    <iframe
+                        width="100%" height="250" frameborder="0" style="border:0"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2505.34!2d71.43!3d51.12!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x424584!2z0L_RgNC-0YHQvy4g0JzikirSq9C70LjQuiDQldC7IDM0LCDQkNGB0YLQsNC90LA!5e0!3m2!1sru!2skz!4v1714000000000"
+                        class="grayscale group-hover:grayscale-0 transition-all duration-700"
+                        allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-stone-200 mt-16 pt-10 flex flex-col md:flex-row justify-between items-center text-xs text-stone-400 uppercase tracking-[0.3em] font-light">
+            <p>© {{ date('Y') }} GlowBook. All beauty rights reserved.</p>
+            <div class="flex space-x-10 mt-6 md:mt-0">
+                <a href="#" class="hover:text-brown transition">Privacy Policy</a>
+                <a href="#" class="hover:text-brown transition">Terms of Service</a>
+            </div>
+        </div>
     </div>
 </footer>
-
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
-        class="fixed bottom-6 right-6 bg-gold text-white w-10 h-10 rounded-full shadow-md hover:opacity-80 transition">
+        class="fixed bottom-6 right-6 bg-gold text-white w-10 h-10 rounded-full shadow-md hover:opacity-80 transition z-50">
     ↑
 </button>
 </body>

@@ -1,9 +1,9 @@
-@extends('layouts.app') {{-- Подключаем твою коричневую шапку --}}
+@extends('layouts.app')
 
 @section('title', 'Profile Settings')
 
 @section('content')
-    <div class="py-12 bg-cream"> {{-- Твой фоновый цвет --}}
+    <div class="py-12 bg-cream">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <div class="px-4 sm:px-0">
