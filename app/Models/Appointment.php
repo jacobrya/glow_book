@@ -26,4 +26,8 @@ class Appointment extends Model
     public function service(): BelongsTo { return $this->belongsTo(Service::class); }
     public function salon(): BelongsTo { return $this->belongsTo(Salon::class); }
     public function review(): HasOne { return $this->hasOne(Review::class); }
+    public function markAsCompleted() {
+    $this->update(['status' => 'completed']);
+}
+
 }

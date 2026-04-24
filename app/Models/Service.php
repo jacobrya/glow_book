@@ -38,4 +38,12 @@ class Service extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+    
+public function scopeAffordable($query, $price = 5000) {
+    return $query->where('price', '<', $price);
+}
+
+public function scopeByCategory($query, $categoryId) {
+    return $query->where('category_id', $categoryId);
+}
 }
