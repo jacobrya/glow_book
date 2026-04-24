@@ -41,4 +41,33 @@ class Salon extends Model
         $avg = $this->specialists()->avg('rating');
         return $avg ? round($avg, 1) : 0;
     }
+
+    // Поиск по названию
+    public function scopeSearch($query, $term)
+    {
+        if ($term) {
+            return $query->where('name', 'like', "%{$term}%");
+        }
+        
+        return $query;
+    }
+
+    // Фильтр по категории
+    public function scopeByCategory($query, $category)
+    {
+        if ($category) {
+            return $query->whereHas('services', function ($q) use ($category) {
+                $q->where('category', $category);
+            });
+        }
+        
+        return $query;
+    }
+
+    // Сортировка по рейтингу
+    public function scopeBestRated($query)
+    {
+        return $query->withAvg('specialists', 'rating')
+                     ->orderBy('specialists_avg_rating', 'desc');
+    }
 }
