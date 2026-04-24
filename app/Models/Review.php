@@ -22,4 +22,5 @@ class Review extends Model
     public function client(): BelongsTo { return $this->belongsTo(User::class, 'client_id'); }
     public function specialist(): BelongsTo { return $this->belongsTo(Specialist::class); }
     public function appointment(): BelongsTo { return $this->belongsTo(Appointment::class); }
+    public function user() { return $this->belongsTo(User::class); }
 }
