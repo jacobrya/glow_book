@@ -10,6 +10,7 @@ use App\Models\Specialist;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+\App\Models\Salon::factory(10)->create();
 
 class DatabaseSeeder extends Seeder
 {
