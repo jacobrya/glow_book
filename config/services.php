@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'greenapi' => [
+        'instance_id' => env('GREEN_API_INSTANCE_ID'),
+        'api_token'   => env('GREEN_API_TOKEN'),
+    ],
+
 ];

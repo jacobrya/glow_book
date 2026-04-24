@@ -25,6 +25,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
     Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [ClientController::class, 'profile'])->name('profile');
     Route::get('/appointments', [ClientController::class, 'appointments'])->name('appointments');
     Route::get('/book', [ClientController::class, 'bookForm'])->name('book');
     Route::post('/book', [ClientController::class, 'bookStore'])->name('book.store');
@@ -33,11 +34,13 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
 
 Route::middleware(['auth', 'specialist'])->prefix('specialist')->name('specialist.')->group(function () {
     Route::get('/dashboard', [SpecialistController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [SpecialistController::class, 'profile'])->name('profile');
     Route::patch('/appointments/{appointment}/status', [SpecialistController::class, 'updateStatus'])->name('appointments.status');
 });
 
 Route::middleware(['auth', 'owner'])->prefix('owner')->name('owner.')->group(function () {
     Route::get('/dashboard', [OwnerController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [OwnerController::class, 'profile'])->name('profile');
     Route::get('/specialists', [OwnerController::class, 'specialists'])->name('specialists');
     Route::post('/specialists', [OwnerController::class, 'addSpecialist'])->name('specialists.store');
     Route::delete('/specialists/{specialist}', [OwnerController::class, 'removeSpecialist'])->name('specialists.destroy');
@@ -65,6 +68,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

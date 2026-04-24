@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendWhatsAppNotification;
 use App\Models\Appointment;
 use App\Models\Review;
 use App\Models\Salon;
@@ -97,29 +98,48 @@ class ClientController extends Controller
             return back()->with('error', 'This time slot is already booked. Please choose another.');
         }
 
-        Appointment::create([
-            'client_id' => auth()->id(),
-            'specialist_id' => $request->specialist_id,
-            'service_id' => $request->service_id,
-            'salon_id' => $request->salon_id,
+        $appointment = Appointment::create([
+            'client_id'        => auth()->id(),
+            'specialist_id'    => $request->specialist_id,
+            'service_id'       => $request->service_id,
+            'salon_id'         => $request->salon_id,
             'appointment_date' => $request->appointment_date,
             'appointment_time' => $request->appointment_time,
-            'status' => 'confirmed',
-            'notes' => $request->notes,
+            'status'           => 'confirmed',
+            'notes'            => $request->notes,
         ]);
+
+        SendWhatsAppNotification::dispatch($appointment);
 
         return redirect()->route('client.appointments')->with('success', 'Appointment booked and confirmed!');
     }
 
+    public function profile()
+    {
+        $user = auth()->user();
+        $total = Appointment::where('client_id', $user->id)->count();
+        $completed = Appointment::where('client_id', $user->id)->where('status', 'completed')->count();
+        $cancelled = Appointment::where('client_id', $user->id)->where('status', 'cancelled')->count();
+        $reviewsGiven = Review::where('client_id', $user->id)->count();
+        $recentAppointments = Appointment::where('client_id', $user->id)
+            ->with(['specialist.user', 'service', 'salon'])
+            ->orderByDesc('appointment_date')
+            ->orderByDesc('appointment_time')
+            ->limit(5)
+            ->get();
+
+        return view('client.profile', compact('user', 'total', 'completed', 'cancelled', 'reviewsGiven', 'recentAppointments'));
+    }
+
     public function storeReview(Request $request, Appointment $appointment)
     {
-        if ($appointment->client_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('review', $appointment);
+
         if ($appointment->status !== 'completed') {
             return back()->with('error', 'You can only review completed appointments.');
         }
-        if ($appointment->review) {
+
+        if ($appointment->review !== null) {
             return back()->with('error', 'You have already reviewed this appointment.');
         }
 

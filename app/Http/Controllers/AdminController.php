@@ -49,38 +49,46 @@ class AdminController extends Controller
 
     public function storeSalon(Request $request)
     {
+        $this->authorize('create', Salon::class);
+
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
-            'address' => 'required|string|max:500',
-            'phone' => 'nullable|string|max:20',
-            'owner_id' => 'required|exists:users,id',
+            'address'     => 'required|string|max:500',
+            'city'        => 'nullable|string|max:100',
+            'phone'       => 'nullable|string|max:20',
+            'owner_id'    => 'required|exists:users,id',
         ]);
-        Salon::create($request->only(['name', 'description', 'address', 'phone', 'owner_id']));
+        Salon::create($request->only(['name', 'description', 'address', 'city', 'phone', 'owner_id']));
         return redirect()->route('admin.salons')->with('success', 'Salon created!');
     }
 
     public function editSalon(Salon $salon)
     {
+        $this->authorize('update', $salon);
         $owners = User::where('role', 'salon_owner')->get();
         return view('admin.salons.edit', compact('salon', 'owners'));
     }
 
     public function updateSalon(Request $request, Salon $salon)
     {
+        $this->authorize('update', $salon);
+
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
-            'address' => 'required|string|max:500',
-            'phone' => 'nullable|string|max:20',
-            'owner_id' => 'required|exists:users,id',
+            'address'     => 'required|string|max:500',
+            'city'        => 'nullable|string|max:100',
+            'phone'       => 'nullable|string|max:20',
+            'owner_id'    => 'required|exists:users,id',
         ]);
-        $salon->update($request->only(['name', 'description', 'address', 'phone', 'owner_id']));
+        $salon->update($request->only(['name', 'description', 'address', 'city', 'phone', 'owner_id']));
         return redirect()->route('admin.salons')->with('success', 'Salon updated!');
     }
 
     public function destroySalon(Salon $salon)
     {
+        $this->authorize('delete', $salon);
         $salon->delete();
         return redirect()->route('admin.salons')->with('success', 'Salon deleted.');
     }

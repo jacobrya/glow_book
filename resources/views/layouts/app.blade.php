@@ -63,6 +63,14 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
                         <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl py-2 border border-stone-200">
+                            @if(auth()->user()->isClient())
+                                <a href="{{ route('client.profile') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">My Profile</a>
+                            @elseif(auth()->user()->isSpecialist())
+                                <a href="{{ route('specialist.profile') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">My Profile</a>
+                            @elseif(auth()->user()->isSalonOwner())
+                                <a href="{{ route('owner.profile') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">My Profile</a>
+                            @endif
+                            <div class="border-t border-stone-100 my-1"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">Sign Out</button>

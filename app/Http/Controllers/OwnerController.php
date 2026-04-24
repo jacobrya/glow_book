@@ -41,6 +41,8 @@ class OwnerController extends Controller
 
     public function addSpecialist(Request $request)
     {
+        $this->authorize('create', Specialist::class);
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'bio' => 'nullable|string',
@@ -61,11 +63,11 @@ class OwnerController extends Controller
 
     public function removeSpecialist(Specialist $specialist)
     {
-        $salon = $this->salon();
-        if (!$salon || $specialist->salon_id !== $salon->id) abort(403);
+        $this->authorize('delete', $specialist);
         $specialist->delete();
         return back()->with('success', 'Specialist removed.');
     }
+
 
     public function services()
     {
@@ -83,6 +85,8 @@ class OwnerController extends Controller
 
     public function storeService(Request $request)
     {
+        $this->authorize('create', Service::class);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -100,15 +104,13 @@ class OwnerController extends Controller
 
     public function editService(Service $service)
     {
-        $salon = $this->salon();
-        if (!$salon || $service->salon_id !== $salon->id) abort(403);
+        $this->authorize('update', $service);
         return view('owner.services.edit', compact('service'));
     }
 
     public function updateService(Request $request, Service $service)
     {
-        $salon = $this->salon();
-        if (!$salon || $service->salon_id !== $salon->id) abort(403);
+        $this->authorize('update', $service);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -124,10 +126,27 @@ class OwnerController extends Controller
 
     public function destroyService(Service $service)
     {
-        $salon = $this->salon();
-        if (!$salon || $service->salon_id !== $salon->id) abort(403);
+        $this->authorize('delete', $service);
         $service->delete();
         return redirect()->route('owner.services')->with('success', 'Service deleted.');
+    }
+
+    public function profile()
+    {
+        $user = auth()->user();
+        $salon = $this->salon();
+
+        if (!$salon) {
+            return view('owner.no-salon');
+        }
+
+        $salon->load(['specialists.user', 'services']);
+        $totalAppointments = Appointment::where('salon_id', $salon->id)->count();
+        $totalRevenue = Appointment::where('salon_id', $salon->id)->where('status', 'completed')->with('service')->get()->sum(fn($a) => $a->service->price);
+        $specialistCount = $salon->specialists->count();
+        $serviceCount = $salon->services->count();
+
+        return view('owner.profile', compact('user', 'salon', 'totalAppointments', 'totalRevenue', 'specialistCount', 'serviceCount'));
     }
 
     public function appointments()
