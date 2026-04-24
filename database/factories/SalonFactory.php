@@ -10,33 +10,47 @@ class SalonFactory extends Factory
     public function definition(): array
     {
         $salonNames = [
-            'Glow Beauty Bar', 'Sulu Studio', 'Nail Room', 'Almaty Beauty', 
-            'Silk Way Salon', 'Apple City Beauty', 'Tengri Spa', 'Lotus Studio', 
-            'Elegance Salon', 'Aizhan Beauty', 'Aura Beauty Clinic', 'Zima Leto',
-            'Brow Art', 'The Face Shop', 'Lounge Beauty'
+            'Glow Beauty Bar', 'Sulu Studio', 'Nail Room', 'Silk Way Salon',
+            'Tengri Spa', 'Lotus Studio', 'Elegance Salon', 'Aizhan Beauty',
+            'Aura Beauty Clinic', 'Brow Art', 'Lounge Beauty', 'Altyn Studio',
+            'Nur Beauty', 'Steppe Glow', 'Dala Spa',
         ];
-        
-        $streets = [
-            'Abay Ave', 'Al-Farabi Ave', 'Tole Bi St', 'Gogol St', 
-            'Dostyk Ave', 'Rozybakiev St', 'Seifullin Ave', 'Zheltoksan St',
-            'Panfilov St', 'Baitursynov St', 'Timiryazev St', 'Samal-2 Microdistrict'
+
+        $cities = [
+            'Almaty', 'Astana', 'Shymkent', 'Karaganda',
+            'Aktobe', 'Atyrau', 'Pavlodar', 'Semey',
+        ];
+
+        $streetsByCity = [
+            'Almaty'    => ['Abay Ave', 'Al-Farabi Ave', 'Dostyk Ave', 'Tole Bi St', 'Rozybakiev St', 'Seifullin Ave', 'Zheltoksan St'],
+            'Astana'    => ['Mangilik El Ave', 'Kabanbay Batyr Ave', 'Kerey & Zhanibek Khans St', 'Beibitshilik St', 'Turan Ave'],
+            'Shymkent'  => ['Tauke Khan Ave', 'Dulati St', 'Karatay St', 'Al-Farabi Ave', 'Bayzakov St'],
+            'Karaganda' => ['Bukharzyrau Ave', 'Nurken Abishev St', 'Erubaev St', 'Gogol St', 'Abdirova Ave'],
+            'Aktobe'    => ['Abilkhayr Khan Ave', 'Bratiev Zhubanovy St', 'Moldagulova Ave'],
+            'Atyrau'    => ['Azattyk Ave', 'Baimukhanov St', 'Sultan Beibarys St'],
+            'Pavlodar'  => ['Lenina St', 'Kachevaya St', 'Satpayev St'],
+            'Semey'     => ['Shakarim Ave', 'Internatsionalnaya St', 'Abaya St'],
         ];
 
         $descriptions = [
-            'The best beauty salon in the center of Almaty. We offer all kinds of hair services, manicures, and pedicures.',
-            'Premium beauty studio. Individual approach to each client, cozy atmosphere, and professional masters.',
-            'Modern beauty coworking and salon. We use only high-quality materials and follow the latest trends.',
-            'Your perfect look is our job. Haircuts, complex coloring, styling, and makeup.',
-            'An oasis of beauty and tranquility in a noisy city. Relaxing SPA treatments, facial and body care.',
+            'Premium beauty studio offering top-tier services with experienced professionals in a modern setting.',
+            'Your go-to destination for nails, hair, and makeup with the latest techniques and products.',
+            'A cozy and professional salon. Full range of beauty services delivered by certified masters.',
+            'Luxury spa and beauty center. Relax and rejuvenate with our wide selection of services.',
+            'Modern beauty studio with an individual approach to each client and a cozy atmosphere.',
         ];
 
+        $city = fake()->randomElement($cities);
+        $streets = $streetsByCity[$city];
+
         return [
-            'name' => fake()->randomElement($salonNames),
+            'name'        => fake()->randomElement($salonNames),
             'description' => fake()->randomElement($descriptions),
-            'address' => 'Almaty, ' . fake()->randomElement($streets) . ', ' . fake()->buildingNumber(),
-            'phone' => '+7 (701) ' . fake()->numerify('### ## ##'),
-            'image' => null,
-            'owner_id' => User::factory()->state(['role' => 'salon_owner']),
+            'city'        => $city,
+            'address'     => fake()->randomElement($streets) . ' ' . fake()->buildingNumber() . ', ' . $city,
+            'phone'       => '+7 (' . fake()->randomElement(['701', '702', '705', '707', '771', '775']) . ') ' . fake()->numerify('### ## ##'),
+            'image'       => null,
+            'owner_id'    => User::factory()->state(['role' => 'salon_owner']),
         ];
     }
 }

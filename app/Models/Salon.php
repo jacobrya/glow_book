@@ -13,7 +13,13 @@ class Salon extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'address', 'phone', 'image', 'owner_id',
+        'name', 'description', 'address', 'city', 'phone', 'image', 'owner_id',
+    ];
+
+    public static array $cities = [
+        'Almaty', 'Astana', 'Shymkent', 'Karaganda', 'Aktobe',
+        'Taraz', 'Pavlodar', 'Ust-Kamenogorsk', 'Semey', 'Atyrau',
+        'Kostanay', 'Aktau', 'Oral', 'Kyzylorda', 'Petropavl',
     ];
 
     public function owner(): BelongsTo
@@ -40,5 +46,43 @@ class Salon extends Model
     {
         $avg = $this->specialists()->avg('rating');
         return $avg ? round($avg, 1) : 0;
+    }
+
+   
+    public function scopeSearch($query, $term)
+    {
+        if ($term) {
+            return $query->where('name', 'like', "%{$term}%");
+        }
+        
+        return $query;
+    }
+
+   
+    public function scopeByCategory($query, $category)
+    {
+        if ($category) {
+            return $query->whereHas('services', function ($q) use ($category) {
+                $q->where('category', $category);
+            });
+        }
+        
+        return $query;
+    }
+
+    
+    public function scopeByCity($query, $city)
+    {
+        if ($city) {
+            return $query->where('city', $city);
+        }
+
+        return $query;
+    }
+
+    public function scopeBestRated($query)
+    {
+        return $query->withAvg('specialists', 'rating')
+                     ->orderBy('specialists_avg_rating', 'desc');
     }
 }

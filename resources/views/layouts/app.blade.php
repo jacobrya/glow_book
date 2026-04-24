@@ -57,9 +57,18 @@
                             <span class="text-sm font-medium">{{ auth()->user()->name }}</span>
                         </button>
                         <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl py-2 border border-stone-200">
-                            <a href="{{ route('profile.edit') }}" class="w-full text-left block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">
-                                {{ __('Profile Settings') }}
-                            </a>
+                            @if(auth()->user()->isClient())
+                                <a href="{{ route('client.profile') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">My Profile</a>
+                            @elseif(auth()->user()->isSpecialist())
+                                <a href="{{ route('specialist.profile') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">My Profile</a>
+                            @elseif(auth()->user()->isSalonOwner())
+                                <a href="{{ route('owner.profile') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">My Profile</a>
+                            @endif
+
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">Settings</a>
+                            
+                            <div class="border-t border-stone-100 my-1"></div>
+                            
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-cream transition">Sign Out</button>
@@ -86,19 +95,16 @@
 <main class="flex-1">@yield('content')</main>
 
 <footer class="bg-cream border-t border-stone-200 mt-12">
-    <div class="max-w-7xl mx-auto px-4 py-16">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-            <div>
-                <h4 class="text-brown font-bold mb-6 text-2xl">GlowBook</h4>
+    <div class="max-w-7xl mx-auto px-4 py-12"> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"> <div>
+                <h4 class="text-brown font-bold mb-4 text-xl">GlowBook</h4>
                 <p class="text-lg text-stone-500 leading-relaxed font-light">
                     Your premier beauty booking platform in Kazakhstan.
                 </p>
             </div>
 
             <div>
-                <h4 class="text-brown font-bold mb-6 text-base uppercase tracking-widest">Quick Links</h4>
-                <div class="space-y-4">
+                <h4 class="text-brown font-bold mb-4 text-xs uppercase tracking-wider">Quick Links</h4>
+                <div class="space-y-2">
                     <a href="{{ route('salons') }}" class="block text-lg text-stone-500 hover:text-gold transition font-light">Salons</a>
                     <a href="{{ route('services') }}" class="block text-lg text-stone-500 hover:text-gold transition font-light">Services</a>
                     <a href="{{ route('specialists') }}" class="block text-lg text-stone-500 hover:text-gold transition font-light">Specialists</a>
@@ -106,8 +112,8 @@
             </div>
 
             <div>
-                <h4 class="text-brown font-bold mb-6 text-base uppercase tracking-widest">Follow Us</h4>
-                <div class="space-y-4 text-lg text-stone-500 font-light">
+                <h4 class="text-brown font-bold mb-4 text-xs uppercase tracking-wider">Follow Us</h4>
+                <div class="space-y-2 text-lg text-stone-500 font-light">
                     <a href="#" class="block hover:text-gold transition">Instagram: @glowbook.kz</a>
                     <a href="#" class="block hover:text-gold transition">Telegram: @glowbook_support</a>
                     <a href="#" class="block hover:text-gold transition">TikTok: @glowbook.kz</a>
@@ -115,47 +121,47 @@
             </div>
 
             <div>
-                <h4 class="text-brown font-bold mb-6 text-base uppercase tracking-widest">Working Hours</h4>
-                <div class="space-y-3 text-lg text-stone-500 font-light">
+                <h4 class="text-brown font-bold mb-4 text-xs uppercase tracking-wider">Working Hours</h4>
+                <div class="space-y-1 text-lg text-stone-500 font-light">
                     <p>Mon – Fri: 09:00 – 21:00</p>
                     <p>Sat – Sun: 10:00 – 20:00</p>
                 </div>
             </div>
         </div>
 
-        <div class="border-t border-stone-100 pt-12">
-            <h4 class="text-brown font-bold mb-8 text-base uppercase tracking-widest text-center">Our Locations</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div class="border-t border-stone-100 pt-10">
+            <h4 class="text-brown font-bold mb-6 text-xs uppercase tracking-wider text-center">Our Locations</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                <div class="group rounded-[2.5rem] overflow-hidden shadow-sm border border-stone-200 bg-white transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
-                    <div class="p-6 bg-white">
+                <div class="group rounded-3xl overflow-hidden shadow-sm border border-stone-200 bg-white transition-all duration-500 hover:shadow-xl hover:-translate-y-2">
+                    <div class="p-4 bg-white">
                         <p class="text-base font-bold text-brown uppercase">📍 Almaty Branch</p>
-                        <p class="text-sm text-stone-400 mt-1 font-light">Abay Ave 52, Almaty</p>
+                        <p class="text-sm text-stone-400 font-light">Abay Ave 52, Almaty</p>
                     </div>
                     <iframe
-                        width="100%" height="250" frameborder="0" style="border:0"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.7702223984384!2d76.9097!3d43.2381!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836ecf36605063%3A0x280e551f33530c34!2z0L_RgNC-0YHQvy4g0JDQsdCw0Y8gNTIsINCQ0LvQvNCw0YLRiyAwNTAwMDAsINCa0LDQt9Cw0YXRgdGC0LDQvQ!5e0!3m2!1sru!2skz!4v1714000000000"
+                        width="100%" height="200" frameborder="0" style="border:0"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.7753383083425!2d76.91428231548446!3d43.23514797913783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836ec800569739%3A0x6b6375084992520!2sAbay%20Ave%2052%2C%20Almaty!5e0!3m2!1sen!2skz!4v1647856321234!5m2!1sen!2skz"
                         class="grayscale group-hover:grayscale-0 transition-all duration-700"
                         allowfullscreen></iframe>
                 </div>
 
-                <div class="group rounded-[2.5rem] overflow-hidden shadow-sm border border-stone-200 bg-white transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
-                    <div class="p-6 bg-white">
+                <div class="group rounded-3xl overflow-hidden shadow-sm border border-stone-200 bg-white transition-all duration-500 hover:shadow-xl hover:-translate-y-2">
+                    <div class="p-4 bg-white">
                         <p class="text-base font-bold text-brown uppercase">📍 Astana Branch</p>
-                        <p class="text-sm text-stone-400 mt-1 font-light">Mangilik El Ave 34, Astana</p>
+                        <p class="text-sm text-stone-400 font-light">Mangilik El Ave 34, Astana</p>
                     </div>
                     <iframe
-                        width="100%" height="250" frameborder="0" style="border:0"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2505.34!2d71.43!3d51.12!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x424584!2z0L_RgNC-0YHQvy4g0JzikirSq9C70LjQuiDQldC7IDM0LCDQkNGB0YLQsNC90LA!5e0!3m2!1sru!2skz!4v1714000000000"
+                        width="100%" height="200" frameborder="0" style="border:0"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2504.484213123456!2d71.42854321578901!3d51.12345678901234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4245869400000001%3A0x1234567890abcdef!2sMangilik%20El%20Ave%2034%2C%20Astana!5e0!3m2!1sen!2skz!4v1647856324321!5m2!1sen!2skz"
                         class="grayscale group-hover:grayscale-0 transition-all duration-700"
                         allowfullscreen></iframe>
                 </div>
             </div>
         </div>
 
-        <div class="border-t border-stone-200 mt-16 pt-10 flex flex-col md:flex-row justify-between items-center text-xs text-stone-400 uppercase tracking-[0.3em] font-light">
+        <div class="border-t border-stone-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-stone-400 uppercase tracking-widest font-light">
             <p>© {{ date('Y') }} GlowBook. All beauty rights reserved.</p>
-            <div class="flex space-x-10 mt-6 md:mt-0">
+            <div class="flex space-x-6 mt-4 md:mt-0">
                 <a href="#" class="hover:text-brown transition">Privacy Policy</a>
                 <a href="#" class="hover:text-brown transition">Terms of Service</a>
             </div>

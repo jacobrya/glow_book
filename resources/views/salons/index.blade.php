@@ -5,7 +5,37 @@
     <div class="bg-brown py-16">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-3xl md:text-4xl font-bold text-gold">Available Salons</h1>
-            <p class="text-stone-400 mt-2">Discover premium beauty spots across Kazakhstan</p>
+            <p class="text-stone-400 mt-2 mb-8">Discover premium beauty spots across Kazakhstan</p>
+
+            <!-- Search Form -->
+            <div class="max-w-4xl mx-auto bg-cream rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-center shadow-lg border border-gold/20">
+                <form action="{{ route('salons') }}" method="GET" class="w-full flex flex-col md:flex-row items-center">
+                    <div class="flex-1 w-full md:w-auto px-6 py-3 border-b md:border-b-0 md:border-r border-brown/10">
+                        <input type="text" name="search" placeholder="Search by name..." value="{{ request('search') }}" class="w-full bg-transparent border-none text-brown placeholder-brown/50 focus:ring-0 p-0 outline-none text-sm font-medium">
+                    </div>
+                    <div class="w-full md:w-44 px-6 py-3 border-b md:border-b-0 md:border-r border-brown/10">
+                        <select name="city" class="w-full bg-transparent border-none text-brown focus:ring-0 p-0 outline-none text-sm font-medium cursor-pointer">
+                            <option value="all" {{ request('city', 'all') === 'all' ? 'selected' : '' }}>All Cities</option>
+                            @foreach($cities as $city)
+                                <option value="{{ $city }}" {{ request('city') === $city ? 'selected' : '' }}>{{ $city }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="w-full md:w-44 px-6 py-3 border-b md:border-b-0 border-brown/10">
+                        <select name="category" class="w-full bg-transparent border-none text-brown focus:ring-0 p-0 outline-none text-sm font-medium cursor-pointer">
+                            <option value="all" {{ request('category', 'all') === 'all' ? 'selected' : '' }}>All Categories</option>
+                            <option value="Hair" {{ request('category') === 'Hair' ? 'selected' : '' }}>Hair</option>
+                            <option value="Nails" {{ request('category') === 'Nails' ? 'selected' : '' }}>Nails</option>
+                            <option value="SPA" {{ request('category') === 'SPA' ? 'selected' : '' }}>SPA</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-auto p-1 mt-2 md:mt-0">
+                        <button type="submit" class="w-full md:w-auto bg-gold text-white px-8 py-3 rounded-xl md:rounded-full font-bold hover:bg-yellow-600 transition shadow-md shadow-gold/30 flex items-center justify-center">
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -24,8 +54,8 @@
                             </div>
 
                             <p class="text-sm text-stone-500 flex items-center">
-                                <svg class="w-4 h-4 mr-1.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                                {{ $salon->address }}
+                                <svg class="w-4 h-4 mr-1.5 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                                {{ $salon->address }}@if($salon->city), <span class="text-gold font-medium ml-1">{{ $salon->city }}</span>@endif
                             </p>
                         </div>
 
