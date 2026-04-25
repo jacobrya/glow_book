@@ -13,9 +13,32 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
+
+        <div class="flex items-center gap-6 p-4 bg-stone-50 rounded-2xl border border-stone-100">
+            <div class="shrink-0">
+                <img id="avatar-preview"
+                     class="h-20 w-20 object-cover rounded-full shadow-md border-2 border-white"
+                     src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=C9A96E&color=fff' }}"
+                     alt="{{ $user->name }}">
+            </div>
+            <div class="flex-1">
+                <x-input-label for="avatar" :value="__('Profile Photo')" class="text-brown font-semibold" />
+                <input id="avatar" name="avatar" type="file"
+                       accept="image/*"
+                       onchange="previewImage(event)"
+                       class="mt-1 block w-full text-sm text-gray-500
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-full file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-gold/10 file:text-gold
+                              hover:file:bg-gold/20 transition-all" />
+                <p class="mt-1 text-xs text-stone-400">JPG, PNG or GIF. Max 2MB.</p>
+                <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
+            </div>
+        </div>
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -32,12 +55,10 @@
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
                         {{ __('Your email address is unverified.') }}
-
                         <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             {{ __('Click here to re-send the verification email.') }}
                         </button>
                     </p>
-
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 font-medium text-sm text-green-600">
                             {{ __('A new verification link has been sent to your email address.') }}
@@ -48,17 +69,25 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button class="btn-gold">{{ __('Save Changes') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                   class="text-sm text-green-600 font-medium">
+                    {{ __('✓ Saved successfully.') }}
+                </p>
             @endif
         </div>
     </form>
+
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById('avatar-preview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 </section>

@@ -14,6 +14,12 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            // Твои кастомные цвета для проекта GLOW
+            colors: {
+                gold: '#D4AF37',
+                brown: '#3d312b',
+                cream: '#F5F5F0',
+            },
         },
     },
 

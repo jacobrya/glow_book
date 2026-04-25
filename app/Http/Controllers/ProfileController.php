@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -21,22 +22,38 @@ class ProfileController extends Controller
         return view('profile.edit', compact('user', 'specialist', 'salon'));
     }
 
+    /**
+     * Update the user's profile information.
+     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
 
-        $user->fill($request->only(['name', 'email', 'phone']));
+        // 1. Заполняем основные данные
+        $user->fill($request->validated());
 
+        // 2. Логика загрузки аватара
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+        }
+
+        // 3. Сбрасываем верификацию email, если он изменился
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
         $user->save();
 
+        // 4. Обновление данных специалиста
         if ($user->isSpecialist() && $user->specialist) {
             $user->specialist->update($request->only(['bio', 'experience_years']));
         }
 
+        // 5. Обновление данных салона
         if ($user->isSalonOwner()) {
             $salon = Salon::where('owner_id', $user->id)->first();
             if ($salon) {
