@@ -7,15 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Collection;
 
 class Specialist extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'user_id', 'salon_id', 'bio', 'experience_years', 'rating',
+        'user_id',
+        'salon_id',
+        'bio',
+        'experience_years',
+        'rating',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -24,19 +39,52 @@ class Specialist extends Model
         ];
     }
 
-    public function user(): BelongsTo { return $this->belongsTo(User::class); }
-    public function salon(): BelongsTo { return $this->belongsTo(Salon::class); }
+    // --- Relationships ---
 
+    /**
+     * Get the user associated with the specialist.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the salon where the specialist works.
+     */
+    public function salon(): BelongsTo
+    {
+        return $this->belongsTo(Salon::class);
+    }
+
+    /**
+     * The services that the specialist provides.
+     */
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'specialist_service');
     }
 
-    public function appointments(): HasMany { return $this->hasMany(Appointment::class); }
-    public function reviews(): HasMany { return $this->hasMany(Review::class); }
+    /**
+     * Get the appointments for the specialist.
+     */
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
 
     /**
-     * Обновляем рейтинг специалиста по его отзывам
+     * Get the reviews for the specialist.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    // --- Business Logic ---
+
+    /**
+     * Recalculate and update the specialist's overall rating based on all reviews.
      */
     public function updateRating(): void
     {
@@ -45,15 +93,37 @@ class Specialist extends Model
     }
 
     /**
-     * Получаем топ N специалистов по рейтингу (по умолчанию 3)
+     * FEATURE: Master of the Month.
+     * Retrieves the specialist with the highest average rating and
+     * most reviews within the current calendar month.
      */
-    public static function topThree(): \Illuminate\Database\Eloquent\Collection
+    public static function getMasterOfTheMonth(): ?self
     {
-        // Обновляем рейтинг всех специалистов перед выборкой
-        self::all()->each->updateRating();
+        return self::whereHas('reviews', function ($query) {
+            // Only consider specialists who have reviews in the current month
+            $query->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year);
+        })
+            ->withAvg(['reviews' => function ($query) {
+                $query->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year);
+            }])
+            ->orderByDesc('reviews_avg_rating')
+            ->orderByDesc('reviews_count')
+            ->first();
+    }
 
+    /**
+     * Get top 3 specialists by overall rating for the homepage.
+     */
+    public static function topThree(): Collection
+    {
         return self::orderByDesc('rating')
-                   ->take(3)
-                   ->get();
+            ->take(3)
+            ->get();
     }
 }

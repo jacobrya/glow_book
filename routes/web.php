@@ -9,11 +9,16 @@ use App\Http\Controllers\SpecialistController;
 use App\Http\Controllers\SalonController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/salons', [SalonController::class, 'index'])->name('salons');
 Route::get('/salons/{salon}', [HomeController::class, 'showSalon'])->name('salons.show');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
-Route::get('/specialists', [HomeController::class, 'specialists'])->name('specialists');
+
+// Updated routes to use SpecialistController for better profile handling
+Route::get('/specialists', [SpecialistController::class, 'index'])->name('specialists');
+Route::get('/specialists/{id}', [SpecialistController::class, 'show'])->name('specialists.show');
+
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
@@ -22,6 +27,7 @@ Route::get('/dashboard', function () {
     if ($user->isSpecialist()) return redirect()->route('specialist.dashboard');
     return redirect()->route('client.dashboard');
 })->middleware(['auth'])->name('dashboard');
+
 
 Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
     Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('dashboard');
@@ -32,11 +38,13 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     Route::post('/review/{appointment}', [ClientController::class, 'storeReview'])->name('review.store');
 });
 
+
 Route::middleware(['auth', 'specialist'])->prefix('specialist')->name('specialist.')->group(function () {
     Route::get('/dashboard', [SpecialistController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [SpecialistController::class, 'profile'])->name('profile');
     Route::patch('/appointments/{appointment}/status', [SpecialistController::class, 'updateStatus'])->name('appointments.status');
 });
+
 
 Route::middleware(['auth', 'owner'])->prefix('owner')->name('owner.')->group(function () {
     Route::get('/dashboard', [OwnerController::class, 'dashboard'])->name('dashboard');
@@ -53,6 +61,7 @@ Route::middleware(['auth', 'owner'])->prefix('owner')->name('owner.')->group(fun
     Route::get('/appointments', [OwnerController::class, 'appointments'])->name('appointments');
 });
 
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/users', [AdminController::class, 'users'])->name('users');
@@ -64,6 +73,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/salons/{salon}', [AdminController::class, 'updateSalon'])->name('salons.update');
     Route::delete('/salons/{salon}', [AdminController::class, 'destroySalon'])->name('salons.destroy');
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

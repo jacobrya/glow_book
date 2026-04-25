@@ -10,12 +10,10 @@
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 @auth
-                    {{-- Главная золотая кнопка бронирования --}}
                     <a href="{{ route('client.book') }}" class="btn-gold text-white px-10 py-4 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-gold/20 hover:-translate-y-1 active:scale-95">
                         Book an Appointment
                     </a>
                 @else
-                    {{-- Золотая кнопка регистрации --}}
                     <a href="{{ route('register') }}" class="btn-gold text-white px-10 py-4 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-gold/20 hover:-translate-y-1 active:scale-95">
                         Get Started Free
                     </a>
@@ -68,8 +66,63 @@
         </div>
     </section>
 
+    {{-- UPCOMING EVENTS SECTION --}}
+    <section class="bg-cream/50 py-20 border-y border-stone-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-brown">Upcoming Beauty Events</h2>
+                <p class="text-stone-500 mt-2">Exclusive masterclasses and beauty days in our partner salons</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {{-- Event 1 --}}
+                <div class="bg-white rounded-[2rem] p-3 shadow-sm flex flex-col sm:flex-row gap-6 hover:shadow-xl transition-all duration-500 group border border-stone-100">
+                    <div class="sm:w-44 h-44 bg-brown rounded-[1.5rem] shrink-0 flex flex-col items-center justify-center text-white relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gold/10 group-hover:scale-110 transition-transform duration-700"></div>
+                        <span class="text-4xl font-black relative z-10">28</span>
+                        <span class="uppercase tracking-[0.2em] text-[10px] font-bold opacity-60 relative z-10">May</span>
+                    </div>
+                    <div class="p-4 flex flex-col justify-center">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+                            <span class="text-gold text-[10px] font-bold uppercase tracking-widest">Masterclass</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-brown mb-2 group-hover:text-gold transition">Summer Glow Trends</h3>
+                        <p class="text-stone-500 text-sm mb-4 leading-relaxed">Master the art of sun-kissed makeup with top Almaty artists.</p>
+                        <div class="flex items-center gap-4 text-[11px] text-stone-400 font-medium">
+                            <span class="flex items-center">📍 Glow Studio Almaty</span>
+                            <span class="flex items-center">⏰ 15:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Event 2 --}}
+                <div class="bg-white rounded-[2rem] p-3 shadow-sm flex flex-col sm:flex-row gap-6 hover:shadow-xl transition-all duration-500 group border border-stone-100">
+                    <div class="sm:w-44 h-44 bg-gold rounded-[1.5rem] shrink-0 flex flex-col items-center justify-center text-brown relative overflow-hidden">
+                        <div class="absolute inset-0 bg-white/20 group-hover:scale-110 transition-transform duration-700"></div>
+                        <span class="text-4xl font-black relative z-10">05</span>
+                        <span class="uppercase tracking-[0.2em] text-[10px] font-bold opacity-60 relative z-10">June</span>
+                    </div>
+                    <div class="p-4 flex flex-col justify-center">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-brown animate-pulse"></span>
+                            <span class="text-brown text-[10px] font-bold uppercase tracking-widest">Grand Opening</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-brown mb-2 group-hover:text-gold transition">New Branch Launch</h3>
+                        <p class="text-stone-500 text-sm mb-4 leading-relaxed">Join us for champagne and gifts at our new premium location.</p>
+                        <div class="flex items-center gap-4 text-[11px] text-stone-400 font-medium">
+                            <span class="flex items-center">📍 Esentai Square</span>
+                            <span class="flex items-center">⏰ All Day</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- SERVICES SECTION --}}
-    <section class="bg-white border-y border-stone-200 py-16">
+    <section class="bg-white py-20">
+        {{-- ... твой код услуг остается таким же, но добавь кнопку в конце ... --}}
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-brown">Popular Services</h2>
@@ -89,7 +142,6 @@
                         </p>
                         <div class="flex items-center justify-between pt-4 border-t border-stone-100">
                             <span class="text-xs text-stone-400 font-medium">{{ $service->duration_minutes }} min</span>
-                            {{-- Компактная золотая кнопка для услуг --}}
                             @auth
                                 <a href="{{ route('client.book', ['salon_id' => $service->salon_id, 'service_id' => $service->id]) }}" class="bg-gold text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-brown transition-all shadow-sm">
                                     Book Now
@@ -103,8 +155,10 @@
                     </div>
                 @endforeach
             </div>
-            <div class="text-center mt-10">
-                <a href="{{ route('services') }}" class="text-gold font-bold text-sm hover:underline tracking-wide uppercase">View all services &rarr;</a>
+            <div class="text-center mt-12">
+                <a href="{{ route('services') }}" class="inline-flex items-center bg-brown text-white px-8 py-3 rounded-2xl font-bold text-xs hover:bg-gold transition-all">
+                    View All Services &rarr;
+                </a>
             </div>
         </div>
     </section>
