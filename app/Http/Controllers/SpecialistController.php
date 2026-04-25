@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Specialist; // Added Specialist model
 use App\Models\Review;
 use Illuminate\Http\Request;
 
 class SpecialistController extends Controller
 {
+    /**
+     * Display the specialist's dashboard with today's and all appointments.
+     */
     public function dashboard()
     {
         $specialist = auth()->user()->specialist;
@@ -31,25 +35,12 @@ class SpecialistController extends Controller
         return view('specialist.dashboard', compact('todayAppointments', 'allAppointments'));
     }
 
-    public function profile()
-    {
-        $specialist = auth()->user()->specialist;
-
-        if (!$specialist) {
-            return view('specialist.no-salon');
-        }
-
-        $specialist->load(['user', 'salon', 'services']);
-        $totalCompleted = Appointment::where('specialist_id', $specialist->id)->where('status', 'completed')->count();
-        $totalCancelled = Appointment::where('specialist_id', $specialist->id)->where('status', 'cancelled')->count();
-        $reviews = Review::where('specialist_id', $specialist->id)->with('client')->orderByDesc('created_at')->get();
-
-        return view('specialist.profile', compact('specialist', 'totalCompleted', 'totalCancelled', 'reviews'));
-    }
-
     public function updateStatus(Request $request, Appointment $appointment)
     {
-        $this->authorize('updateStatus', $appointment);
+        $specialist = auth()->user()->specialist;
+        if (!$specialist || $appointment->specialist_id !== $specialist->id) {
+            abort(403);
+        }
 
         $request->validate([
             'status' => 'required|in:completed,cancelled',
