@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
             'phone'    => '+7 701 555 5555',
         ]);
 
-        // ── Specialists ───────────────────────────────────────────────────────
+        // ── Specialists (Users) ───────────────────────────────────────────────
         $specUsers = [
             User::create(['name' => 'Aigerim Satpayeva',   'email' => 'specialist@glowbook.kz',        'password' => Hash::make('password'), 'role' => 'specialist', 'phone' => '+7 702 111 1111']),
             User::create(['name' => 'Dana Mukhamedova',    'email' => 'dana@glowbook.kz',              'password' => Hash::make('password'), 'role' => 'specialist', 'phone' => '+7 702 222 2222']),
@@ -159,88 +159,79 @@ class DatabaseSeeder extends Seeder
             Service::create(['name' => 'Body Scrub',        'description' => 'Exfoliating body scrub with nourishing oils that leaves skin silky smooth.',                            'price' => 12000, 'duration_minutes' => 60,  'category' => 'Spa',      'salon_id' => $salon4->id]),
         ];
 
-        // ── Specialists ───────────────────────────────────────────────────────
-        // Salon 1 – Almaty
-        $spec1 = Specialist::create(['user_id' => $specUsers[0]->id,  'salon_id' => $salon1->id, 'bio' => 'Certified nail artist with international training. Specializes in gel extensions and intricate nail art.', 'experience_years' => 7, 'rating' => 4.8]);
-        $spec2 = Specialist::create(['user_id' => $specUsers[1]->id,  'salon_id' => $salon1->id, 'bio' => 'Professional hairstylist and colorist trained in Paris. Balayage and creative coloring expert.',           'experience_years' => 5, 'rating' => 4.6]);
-        $spec3 = Specialist::create(['user_id' => $specUsers[2]->id,  'salon_id' => $salon1->id, 'bio' => 'Expert makeup artist and brow specialist. Works with top international beauty brands.',                    'experience_years' => 4, 'rating' => 4.9]);
+        // ── Specialists (Entities) ────────────────────────────────────────────
+        // Собираем массив именно объектов моделей Specialist
+        $specialists = [
+            Specialist::create(['user_id' => $specUsers[0]->id,  'salon_id' => $salon1->id, 'bio' => 'Certified nail artist with international training. Specializes in gel extensions and intricate nail art.', 'experience_years' => 7, 'rating' => 4.8]), // 0
+            Specialist::create(['user_id' => $specUsers[1]->id,  'salon_id' => $salon1->id, 'bio' => 'Professional hairstylist and colorist trained in Paris. Balayage and creative coloring expert.',           'experience_years' => 5, 'rating' => 4.6]), // 1
+            Specialist::create(['user_id' => $specUsers[2]->id,  'salon_id' => $salon1->id, 'bio' => 'Expert makeup artist and brow specialist. Works with top international beauty brands.',                    'experience_years' => 4, 'rating' => 4.9]), // 2
 
-        // Salon 2 – Astana
-        $spec4 = Specialist::create(['user_id' => $specUsers[3]->id,  'salon_id' => $salon2->id, 'bio' => 'Gel nail specialist with a passion for creative nail art and bold designs.',                               'experience_years' => 6, 'rating' => 4.7]);
-        $spec5 = Specialist::create(['user_id' => $specUsers[4]->id,  'salon_id' => $salon2->id, 'bio' => 'Hair transformation expert specializing in balayage, keratin, and color corrections.',                    'experience_years' => 8, 'rating' => 4.9]);
-        $spec6 = Specialist::create(['user_id' => $specUsers[5]->id,  'salon_id' => $salon2->id, 'bio' => 'Lash and skincare specialist with advanced certification in Russian volume and Korean skincare.',          'experience_years' => 3, 'rating' => 4.5]);
+            Specialist::create(['user_id' => $specUsers[3]->id,  'salon_id' => $salon2->id, 'bio' => 'Gel nail specialist with a passion for creative nail art and bold designs.',                               'experience_years' => 6, 'rating' => 4.7]), // 3
+            Specialist::create(['user_id' => $specUsers[4]->id,  'salon_id' => $salon2->id, 'bio' => 'Hair transformation expert specializing in balayage, keratin, and color corrections.',                    'experience_years' => 8, 'rating' => 4.9]), // 4
+            Specialist::create(['user_id' => $specUsers[5]->id,  'salon_id' => $salon2->id, 'bio' => 'Lash and skincare specialist with advanced certification in Russian volume and Korean skincare.',          'experience_years' => 3, 'rating' => 4.5]), // 5
 
-        // Salon 3 – Shymkent
-        $spec7 = Specialist::create(['user_id' => $specUsers[6]->id,  'salon_id' => $salon3->id, 'bio' => 'Nail technician and brow master with 5 years of experience. Known for clean finishes and creative art.',  'experience_years' => 5, 'rating' => 4.6]);
-        $spec8 = Specialist::create(['user_id' => $specUsers[7]->id,  'salon_id' => $salon3->id, 'bio' => 'Hairstylist specializing in modern cuts, ombre coloring, and keratin straightening treatments.',          'experience_years' => 6, 'rating' => 4.7]);
-        $spec9 = Specialist::create(['user_id' => $specUsers[8]->id,  'salon_id' => $salon3->id, 'bio' => 'Spa therapist and massage specialist. Certified in Swedish, deep-tissue, and aromatherapy massage.',      'experience_years' => 4, 'rating' => 4.8]);
+            Specialist::create(['user_id' => $specUsers[6]->id,  'salon_id' => $salon3->id, 'bio' => 'Nail technician and brow master with 5 years of experience. Known for clean finishes and creative art.',  'experience_years' => 5, 'rating' => 4.6]), // 6
+            Specialist::create(['user_id' => $specUsers[7]->id,  'salon_id' => $salon3->id, 'bio' => 'Hairstylist specializing in modern cuts, ombre coloring, and keratin straightening treatments.',          'experience_years' => 6, 'rating' => 4.7]), // 7
+            Specialist::create(['user_id' => $specUsers[8]->id,  'salon_id' => $salon3->id, 'bio' => 'Spa therapist and massage specialist. Certified in Swedish, deep-tissue, and aromatherapy massage.',      'experience_years' => 4, 'rating' => 4.8]), // 8
 
-        // Salon 4 – Karaganda
-        $spec10 = Specialist::create(['user_id' => $specUsers[9]->id,  'salon_id' => $salon4->id, 'bio' => 'Luxury nail and spa specialist offering premium nail services alongside pampering spa treatments.',       'experience_years' => 7, 'rating' => 4.9]);
-        $spec11 = Specialist::create(['user_id' => $specUsers[10]->id, 'salon_id' => $salon4->id, 'bio' => 'Anti-aging skincare expert and facial specialist trained in Korean and European skincare techniques.',    'experience_years' => 9, 'rating' => 5.0]);
-        $spec12 = Specialist::create(['user_id' => $specUsers[11]->id, 'salon_id' => $salon4->id, 'bio' => 'Hair colorist and lash artist. Specializes in dimensional highlights and natural lash lift treatments.',  'experience_years' => 5, 'rating' => 4.7]);
+            Specialist::create(['user_id' => $specUsers[9]->id,  'salon_id' => $salon4->id, 'bio' => 'Luxury nail and spa specialist offering premium nail services alongside pampering spa treatments.',       'experience_years' => 7, 'rating' => 4.9]), // 9
+            Specialist::create(['user_id' => $specUsers[10]->id, 'salon_id' => $salon4->id, 'bio' => 'Anti-aging skincare expert and facial specialist trained in Korean and European skincare techniques.',    'experience_years' => 9, 'rating' => 5.0]), // 10
+            Specialist::create(['user_id' => $specUsers[11]->id, 'salon_id' => $salon4->id, 'bio' => 'Hair colorist and lash artist. Specializes in dimensional highlights and natural lash lift treatments.',  'experience_years' => 5, 'rating' => 4.7]), // 11
+        ];
 
         // ── Service assignments ───────────────────────────────────────────────
-        $spec1->services()->attach([$s1[0]->id, $s1[1]->id]);
-        $spec2->services()->attach([$s1[2]->id, $s1[3]->id]);
-        $spec3->services()->attach([$s1[4]->id, $s1[5]->id]);
+        $specialists[0]->services()->attach([$s1[0]->id, $s1[1]->id]);
+        $specialists[1]->services()->attach([$s1[2]->id, $s1[3]->id]);
+        $specialists[2]->services()->attach([$s1[4]->id, $s1[5]->id]);
 
-        $spec4->services()->attach([$s2[0]->id]);
-        $spec5->services()->attach([$s2[1]->id, $s2[2]->id]);
-        $spec6->services()->attach([$s2[3]->id, $s2[4]->id, $s2[5]->id]);
+        $specialists[3]->services()->attach([$s2[0]->id]);
+        $specialists[4]->services()->attach([$s2[1]->id, $s2[2]->id]);
+        $specialists[5]->services()->attach([$s2[3]->id, $s2[4]->id, $s2[5]->id]);
 
-        $spec7->services()->attach([$s3[0]->id, $s3[2]->id, $s3[3]->id]);
-        $spec8->services()->attach([$s3[1]->id, $s3[5]->id]);
-        $spec9->services()->attach([$s3[4]->id]);
+        $specialists[6]->services()->attach([$s3[0]->id, $s3[2]->id, $s3[3]->id]);
+        $specialists[7]->services()->attach([$s3[1]->id, $s3[5]->id]);
+        $specialists[8]->services()->attach([$s3[4]->id]);
 
-        $spec10->services()->attach([$s4[0]->id, $s4[1]->id, $s4[5]->id]);
-        $spec11->services()->attach([$s4[2]->id]);
-        $spec12->services()->attach([$s4[3]->id, $s4[4]->id]);
+        $specialists[9]->services()->attach([$s4[0]->id, $s4[1]->id, $s4[5]->id]);
+        $specialists[10]->services()->attach([$s4[2]->id]);
+        $specialists[11]->services()->attach([$s4[3]->id, $s4[4]->id]);
 
         // ── Appointments ──────────────────────────────────────────────────────
         $appointments = [
             // Upcoming – confirmed
-            Appointment::create(['client_id' => $clients[0]->id, 'specialist_id' => $spec1->id,  'service_id' => $s1[0]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->addDays(1)->toDateString(),  'appointment_time' => '10:00', 'status' => 'confirmed', 'notes' => 'Gel manicure with French tips']),
-            Appointment::create(['client_id' => $clients[1]->id, 'specialist_id' => $spec2->id,  'service_id' => $s1[2]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->addDays(1)->toDateString(),  'appointment_time' => '14:00', 'status' => 'confirmed']),
-            Appointment::create(['client_id' => $clients[2]->id, 'specialist_id' => $spec4->id,  'service_id' => $s2[0]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->addDays(2)->toDateString(),  'appointment_time' => '11:00', 'status' => 'confirmed']),
-            Appointment::create(['client_id' => $clients[3]->id, 'specialist_id' => $spec5->id,  'service_id' => $s2[1]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->addDays(3)->toDateString(),  'appointment_time' => '13:00', 'status' => 'confirmed']),
-            Appointment::create(['client_id' => $clients[4]->id, 'specialist_id' => $spec7->id,  'service_id' => $s3[0]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->addDays(2)->toDateString(),  'appointment_time' => '09:30', 'status' => 'confirmed']),
-            Appointment::create(['client_id' => $clients[5]->id, 'specialist_id' => $spec8->id,  'service_id' => $s3[1]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->addDays(4)->toDateString(),  'appointment_time' => '15:00', 'status' => 'confirmed']),
-            Appointment::create(['client_id' => $clients[6]->id, 'specialist_id' => $spec10->id, 'service_id' => $s4[0]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->addDays(1)->toDateString(),  'appointment_time' => '11:30', 'status' => 'confirmed', 'notes' => 'Spa manicure with paraffin']),
-            Appointment::create(['client_id' => $clients[7]->id, 'specialist_id' => $spec11->id, 'service_id' => $s4[2]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->addDays(5)->toDateString(),  'appointment_time' => '16:00', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[0]->id, 'specialist_id' => $specialists[0]->id,  'service_id' => $s1[0]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->addDays(1)->toDateString(),  'appointment_time' => '10:00', 'status' => 'confirmed', 'notes' => 'Gel manicure with French tips']),
+            Appointment::create(['client_id' => $clients[1]->id, 'specialist_id' => $specialists[1]->id,  'service_id' => $s1[2]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->addDays(1)->toDateString(),  'appointment_time' => '14:00', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[2]->id, 'specialist_id' => $specialists[3]->id,  'service_id' => $s2[0]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->addDays(2)->toDateString(),  'appointment_time' => '11:00', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[3]->id, 'specialist_id' => $specialists[4]->id,  'service_id' => $s2[1]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->addDays(3)->toDateString(),  'appointment_time' => '13:00', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[4]->id, 'specialist_id' => $specialists[6]->id,  'service_id' => $s3[0]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->addDays(2)->toDateString(),  'appointment_time' => '09:30', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[5]->id, 'specialist_id' => $specialists[7]->id,  'service_id' => $s3[1]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->addDays(4)->toDateString(),  'appointment_time' => '15:00', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[6]->id, 'specialist_id' => $specialists[9]->id, 'service_id' => $s4[0]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->addDays(1)->toDateString(),  'appointment_time' => '11:30', 'status' => 'confirmed', 'notes' => 'Spa manicure with paraffin']),
+            Appointment::create(['client_id' => $clients[7]->id, 'specialist_id' => $specialists[10]->id, 'service_id' => $s4[2]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->addDays(5)->toDateString(),  'appointment_time' => '16:00', 'status' => 'confirmed']),
 
             // Past – completed (reviewable)
-            Appointment::create(['client_id' => $clients[0]->id, 'specialist_id' => $spec2->id,  'service_id' => $s1[3]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->subDays(3)->toDateString(),  'appointment_time' => '15:00', 'status' => 'completed']),   // [8]
-            Appointment::create(['client_id' => $clients[1]->id, 'specialist_id' => $spec3->id,  'service_id' => $s1[4]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->subDays(5)->toDateString(),  'appointment_time' => '12:00', 'status' => 'completed']),   // [9]
-            Appointment::create(['client_id' => $clients[2]->id, 'specialist_id' => $spec5->id,  'service_id' => $s2[2]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(7)->toDateString(),  'appointment_time' => '10:00', 'status' => 'completed']),   // [10]
-            Appointment::create(['client_id' => $clients[3]->id, 'specialist_id' => $spec6->id,  'service_id' => $s2[5]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(2)->toDateString(),  'appointment_time' => '15:30', 'status' => 'completed']),   // [11]
-            Appointment::create(['client_id' => $clients[4]->id, 'specialist_id' => $spec9->id,  'service_id' => $s3[4]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->subDays(4)->toDateString(),  'appointment_time' => '14:00', 'status' => 'completed']),   // [12]
-            Appointment::create(['client_id' => $clients[5]->id, 'specialist_id' => $spec8->id,  'service_id' => $s3[5]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->subDays(6)->toDateString(),  'appointment_time' => '11:00', 'status' => 'completed']),   // [13]
-            Appointment::create(['client_id' => $clients[6]->id, 'specialist_id' => $spec11->id, 'service_id' => $s4[2]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->subDays(8)->toDateString(),  'appointment_time' => '10:30', 'status' => 'completed']),   // [14]
-            Appointment::create(['client_id' => $clients[7]->id, 'specialist_id' => $spec12->id, 'service_id' => $s4[3]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->subDays(10)->toDateString(), 'appointment_time' => '13:00', 'status' => 'completed']),   // [15]
-            Appointment::create(['client_id' => $clients[0]->id, 'specialist_id' => $spec6->id,  'service_id' => $s2[4]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(14)->toDateString(), 'appointment_time' => '09:00', 'status' => 'completed']),   // [16]
-            Appointment::create(['client_id' => $clients[3]->id, 'specialist_id' => $spec1->id,  'service_id' => $s1[1]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->subDays(9)->toDateString(),  'appointment_time' => '12:00', 'status' => 'completed']),   // [17]
+            Appointment::create(['client_id' => $clients[0]->id, 'specialist_id' => $specialists[1]->id,  'service_id' => $s1[3]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->subDays(3)->toDateString(),  'appointment_time' => '15:00', 'status' => 'completed']),   // [8]
+            Appointment::create(['client_id' => $clients[1]->id, 'specialist_id' => $specialists[2]->id,  'service_id' => $s1[4]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->subDays(5)->toDateString(),  'appointment_time' => '12:00', 'status' => 'completed']),   // [9]
+            Appointment::create(['client_id' => $clients[2]->id, 'specialist_id' => $specialists[4]->id,  'service_id' => $s2[2]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(7)->toDateString(),  'appointment_time' => '10:00', 'status' => 'completed']),   // [10]
+            Appointment::create(['client_id' => $clients[3]->id, 'specialist_id' => $specialists[5]->id,  'service_id' => $s2[5]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(2)->toDateString(),  'appointment_time' => '15:30', 'status' => 'completed']),   // [11]
+            Appointment::create(['client_id' => $clients[4]->id, 'specialist_id' => $specialists[8]->id,  'service_id' => $s3[4]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->subDays(4)->toDateString(),  'appointment_time' => '14:00', 'status' => 'completed']),   // [12]
+            Appointment::create(['client_id' => $clients[5]->id, 'specialist_id' => $specialists[7]->id,  'service_id' => $s3[5]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->subDays(6)->toDateString(),  'appointment_time' => '11:00', 'status' => 'completed']),   // [13]
+            Appointment::create(['client_id' => $clients[6]->id, 'specialist_id' => $specialists[10]->id, 'service_id' => $s4[2]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->subDays(8)->toDateString(),  'appointment_time' => '10:30', 'status' => 'completed']),   // [14]
+            Appointment::create(['client_id' => $clients[7]->id, 'specialist_id' => $specialists[11]->id, 'service_id' => $s4[3]->id, 'salon_id' => $salon4->id, 'appointment_date' => now()->subDays(10)->toDateString(), 'appointment_time' => '13:00', 'status' => 'completed']),   // [15]
+            Appointment::create(['client_id' => $clients[0]->id, 'specialist_id' => $specialists[5]->id,  'service_id' => $s2[4]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(14)->toDateString(), 'appointment_time' => '09:00', 'status' => 'completed']),   // [16]
+            Appointment::create(['client_id' => $clients[3]->id, 'specialist_id' => $specialists[0]->id,  'service_id' => $s1[1]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->subDays(9)->toDateString(),  'appointment_time' => '12:00', 'status' => 'completed']),   // [17]
 
             // Past – cancelled
-            Appointment::create(['client_id' => $clients[4]->id, 'specialist_id' => $spec6->id,  'service_id' => $s2[4]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(1)->toDateString(),  'appointment_time' => '09:30', 'status' => 'cancelled']),
-            Appointment::create(['client_id' => $clients[2]->id, 'specialist_id' => $spec7->id,  'service_id' => $s3[2]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->subDays(3)->toDateString(),  'appointment_time' => '16:00', 'status' => 'cancelled']),
+            Appointment::create(['client_id' => $clients[4]->id, 'specialist_id' => $specialists[5]->id,  'service_id' => $s2[4]->id, 'salon_id' => $salon2->id, 'appointment_date' => now()->subDays(1)->toDateString(),  'appointment_time' => '09:30', 'status' => 'cancelled']),
+            Appointment::create(['client_id' => $clients[2]->id, 'specialist_id' => $specialists[6]->id,  'service_id' => $s3[2]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->subDays(3)->toDateString(),  'appointment_time' => '16:00', 'status' => 'cancelled']),
 
             // Today
-            Appointment::create(['client_id' => $clients[1]->id, 'specialist_id' => $spec3->id,  'service_id' => $s1[5]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->toDateString(),              'appointment_time' => '11:00', 'status' => 'confirmed']),
-            Appointment::create(['client_id' => $clients[6]->id, 'specialist_id' => $spec9->id,  'service_id' => $s3[4]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->toDateString(),              'appointment_time' => '14:30', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[1]->id, 'specialist_id' => $specialists[2]->id,  'service_id' => $s1[5]->id, 'salon_id' => $salon1->id, 'appointment_date' => now()->toDateString(),              'appointment_time' => '11:00', 'status' => 'confirmed']),
+            Appointment::create(['client_id' => $clients[6]->id, 'specialist_id' => $specialists[8]->id,  'service_id' => $s3[4]->id, 'salon_id' => $salon3->id, 'appointment_date' => now()->toDateString(),              'appointment_time' => '14:30', 'status' => 'confirmed']),
         ];
 
-        // ── Reviews ───────────────────────────────────────────────────────────
-        Review::create(['client_id' => $clients[0]->id, 'specialist_id' => $spec2->id,  'appointment_id' => $appointments[8]->id,  'rating' => 5, 'comment' => 'Dana is an amazing stylist! My hair looks absolutely perfect. Will definitely come back.']);
-        Review::create(['client_id' => $clients[1]->id, 'specialist_id' => $spec3->id,  'appointment_id' => $appointments[9]->id,  'rating' => 5, 'comment' => 'Kamila did incredible makeup for my event. Everyone was asking who did it!']);
-        Review::create(['client_id' => $clients[2]->id, 'specialist_id' => $spec5->id,  'appointment_id' => $appointments[10]->id, 'rating' => 5, 'comment' => 'Best keratin treatment ever! Aruzhan is so professional and the results lasted 4 months.']);
-        Review::create(['client_id' => $clients[3]->id, 'specialist_id' => $spec6->id,  'appointment_id' => $appointments[11]->id, 'rating' => 4, 'comment' => 'Lovely facial, my skin felt so refreshed. Tomiris explained every step. Very professional.']);
-        Review::create(['client_id' => $clients[4]->id, 'specialist_id' => $spec9->id,  'appointment_id' => $appointments[12]->id, 'rating' => 5, 'comment' => 'Gulnaz gives the best body massage in Shymkent. So relaxing, I fell asleep on the table!']);
-        Review::create(['client_id' => $clients[5]->id, 'specialist_id' => $spec8->id,  'appointment_id' => $appointments[13]->id, 'rating' => 4, 'comment' => 'Great hair straightening result. Asel was careful and thorough. Lasts really well.']);
-        Review::create(['client_id' => $clients[6]->id, 'specialist_id' => $spec11->id, 'appointment_id' => $appointments[14]->id, 'rating' => 5, 'comment' => 'Sandugash is a skincare genius. The anti-age facial made me look 5 years younger. Absolutely worth it!']);
-        Review::create(['client_id' => $clients[7]->id, 'specialist_id' => $spec12->id, 'appointment_id' => $appointments[15]->id, 'rating' => 5, 'comment' => 'Botakoz did perfect highlights. Natural, dimensional, exactly what I wanted. Very happy!']);
-        Review::create(['client_id' => $clients[0]->id, 'specialist_id' => $spec6->id,  'appointment_id' => $appointments[16]->id, 'rating' => 4, 'comment' => 'Beautiful lash extensions, very natural looking. Tomiris was precise and quick.']);
-        Review::create(['client_id' => $clients[3]->id, 'specialist_id' => $spec1->id,  'appointment_id' => $appointments[17]->id, 'rating' => 5, 'comment' => 'Aigerim is truly a nail artist. My pedicure was perfect. Super clean and relaxing experience.']);
+        // ── Вызов твоего нового изолированного ReviewSeeder ───────────────────
+        $reviewSeeder = new ReviewSeeder();
+        $reviewSeeder->run($appointments, $clients, $specialists);
 
         // ── Update ratings & factory data ─────────────────────────────────────
         Specialist::all()->each(fn($s) => $s->updateRating());
